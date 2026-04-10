@@ -75,7 +75,7 @@ wheels = [
 ]
 
 [[package]]
-name = "django-template-main"
+name = "movie-reservation-system"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

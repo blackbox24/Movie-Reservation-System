@@ -1,5 +1,5 @@
 [project]
-name = "django-template-main"
+name = "movie-reservation-system"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -50,7 +50,7 @@ ignore = [
 
 
 [tool.ruff.lint.isort]
-known-first-party = ["clgc_web"]
+known-first-party = ["movie-reservation-system"]
 [tool.mypy]
 python_version = "3.12"
 strict = true
