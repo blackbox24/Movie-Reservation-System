@@ -1,0 +1,6 @@
+venv/
+.git/
+
+*.log
+.env.example
+db.sqlite
