@@ -1,5 +1,6 @@
 import logging
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from decouple import Csv, config
@@ -32,9 +33,41 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", cast=bool, default=False)
 SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", cast=bool, default=True)
 CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", cast=bool, default=True)
+
 CSRF_TRUSTED_ORIGINS = config(
     "CSRF_TRUSTED_ORIGINS", cast=lambda v: [s.strip() for s in v.split(",")], default=[]
 )
+
+# AUTHENTICATION
+
+REST_FRAMEWORK = {
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",  # Or your chosen scheme
+    "ALLOWED_VERSIONS": ["v1", "v2"],  # List of allowed versions
+    "DEFAULT_VERSION": "v1",  # The default version to use if not specified
+    "VERSION_PARAM": "version",
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# JSON WEB TOKENS CONFIGURAITONS
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(config("ACCESS_TOKEN_LIFETIME", cast=int)),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=config("REFRESH_TOKEN_LIFETIME", cast=int)),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Your Project API",
+    "DESCRIPTION": "Your project description",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # OTHER SETTINGS
+}
+
+
+CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
 
 # Application definition
 DJANGO_APPS = [
@@ -44,18 +77,30 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "django.contrib.humanize",
 ]
 
-# THIRD_PARTY_APPS = [
+THIRD_PARTY_APPS = [
+    # Add your third-party apps here
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+    "drf_spectacular",
+    "corsheaders",
+]
 
-# ]
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS", cast=lambda v: [s.strip() for s in v.split(",")], default=[]
+)
 
+SITE_ID = 1
 # Custom apps
 # CUSTOM_APPS = [
 #     # Add your custom apps here
 # ]
 
-INSTALLED_APPS = DJANGO_APPS  # + THIRD_PARTY_APPS + CUSTOM_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS  # + CUSTOM_APPS
 
 
 # AUTHENTICATION_BACKENDS  = [
@@ -68,11 +113,13 @@ INSTALLED_APPS = DJANGO_APPS  # + THIRD_PARTY_APPS + CUSTOM_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -94,17 +141,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "guardian.backends.ObjectPermissionBackend",
-]
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 DATABASES = {}
 USE_SQLITE = config("USE_SQLITE", cast=bool, default=True)
-USE_MYSQL = config("USE_MYSQL",  cast=bool, default=False)
-USE_POSTGRES = config("USE_POSTGRES",  cast=bool, default=False)
+USE_MYSQL = config("USE_MYSQL", cast=bool, default=False)
+USE_POSTGRES = config("USE_POSTGRES", cast=bool, default=False)
 
 if USE_SQLITE:
     logger.info(f"USE_SQLITE: {USE_SQLITE}")

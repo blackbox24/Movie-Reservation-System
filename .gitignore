@@ -1,4 +1,6 @@
 .env
+.env.prod
+.env.db.prod
 venv/
 .venv/
 __pycache__ 
