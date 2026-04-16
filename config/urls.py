@@ -1,9 +1,10 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("accounts/",include("accounts.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # path('accounts/',include('allauth.urls')),
     # Optional UI:

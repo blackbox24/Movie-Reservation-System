@@ -45,7 +45,9 @@ REST_FRAMEWORK = {
     "ALLOWED_VERSIONS": ["v1", "v2"],  # List of allowed versions
     "DEFAULT_VERSION": "v1",  # The default version to use if not specified
     "VERSION_PARAM": "version",
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
@@ -66,7 +68,7 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
-
+AUTH_USER_MODEL = "users.User"
 CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
 
 # Application definition
@@ -99,9 +101,10 @@ SITE_ID = 1
 CUSTOM_APPS = [
     # Add your custom apps here
     "accounts",
+    "users",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS  # + CUSTOM_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
 
 # AUTHENTICATION_BACKENDS  = [
@@ -120,7 +123,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
