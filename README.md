@@ -10,9 +10,9 @@ This backend system for a movie reservation service. The service will allow user
 
 ### User Authentication and Authorization
 
-- [ ] Users should be able to sign up and log in.
+- [x] Users should be able to sign up and log in.
 
-- [ ] roles for users, such as admin and regular user. Admins should be able to manage movies and showtimes.
+- [x] roles for users, such as admin and regular user. Admins should be able to manage movies and showtimes.
 
 - [ ] Regular users should be able to reserve seats for a showtime.
 
