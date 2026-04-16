@@ -96,9 +96,10 @@ CSRF_TRUSTED_ORIGINS = config(
 
 SITE_ID = 1
 # Custom apps
-# CUSTOM_APPS = [
-#     # Add your custom apps here
-# ]
+CUSTOM_APPS = [
+    # Add your custom apps here
+    "accounts",
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS  # + CUSTOM_APPS
 
