@@ -1,5 +1,5 @@
 from django.urls import reverse
-from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
 from rest_framework.test import APITestCase
 
 from users.models import User
@@ -26,4 +26,3 @@ class AuthTestCase(APITestCase):
         response = self.client.post(url, data={"username": self.test_user.username, "password": "test_password"})
         self.assertEqual(response.status_code, HTTP_200_OK)
 
-from django.core.management.utils import get_random_secret_key

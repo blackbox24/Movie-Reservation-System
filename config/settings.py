@@ -102,6 +102,7 @@ CUSTOM_APPS = [
     # Add your custom apps here
     "accounts",
     "users",
+    "movies",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS

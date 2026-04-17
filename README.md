@@ -51,3 +51,20 @@ This backend system for a movie reservation service. The service will allow user
 - Think about how you will handle the authentication and authorization of users.
 
 **NOTE:** This project is quite complex and will require you to think about the design and implementation of the system. You can use any programming language and database of your choice. I would recommend using a relational database such as MySQL or PostgreSQL. Once you have finished this project, you will have a good understanding of how to implement complex business logic, think about the data model and relationships, and complex queries. You can also extend this project by adding more features such as payment processing, email notifications, etc.
+
+```markdown
+# Movie
+- movie_id, title, description, duration, rating, image
+
+# Cinemas
+- id, name, city, total_screen
+
+# Screen
+- id, cinema_id, screen_number, total_seats
+
+# showtimes
+- id, movie_id, screen_id, start_time, base_price
+
+# Booking
+- id, user_id, total_amount, showtime_id, status
+```
