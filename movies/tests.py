@@ -14,6 +14,11 @@ class MovieTest(APITestCase):
             username="testadmin", password="testpass123", role="admin"
         )
         self.normal_user = User.objects.create_user(username="test1admin", password="testpass123")
+        self.test_movie = Movie.objects.create(
+            title="spiderman",
+            description="spiderman",
+            duration="16:37:18.154Z"
+        )
 
     def test_create_movie_successful(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
@@ -23,7 +28,7 @@ class MovieTest(APITestCase):
 
         movies = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(movies), 0)
+        self.assertTrue(len(movies) > 0)
 
     def test_create_movie_post_fail(self):
         self.client.force_authenticate(user=self.normal_user)  # type: ignore
@@ -60,3 +65,35 @@ class MovieTest(APITestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(is_ava)
+
+    def test_retrieve_movie_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
+
+        url = reverse("get_update_delete_movie_view", args=[self.test_movie.pk])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_movie_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
+        data = {
+            "title": "Man of steel"
+        }
+        url = reverse("get_update_delete_movie_view", args=[self.test_movie.pk])
+        response = self.client.patch(url, data=data)
+
+        is_ava = Movie.objects.filter(title="Man of steel").exists()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(is_ava)
+
+    def test_delete_movie_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
+
+        url = reverse("get_update_delete_movie_view", args=[self.test_movie.pk])
+        response = self.client.delete(url)
+
+        is_ava = Movie.objects.filter(title="Man of steel").exists()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(is_ava)
