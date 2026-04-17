@@ -1,7 +1,9 @@
 # Create your tests here.
-import requests
+from io import BytesIO
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+from PIL import Image
 from rest_framework.test import APITestCase
 
 from movies.models import Movie
@@ -39,15 +41,15 @@ class MovieTest(APITestCase):
 
     def test_create_movie_post_success(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
-        file_response = requests.get(
-            "https://images.unsplash.com/photo-1661495896705-dce1b43030b0?ixid=M3w4MjcwNjd8MHwxfHNlYXJjaHwxODF8fGFuaW1lJTIwd2FsbHBhcGVyfGVufDB8fHx8MTc3NjQzNzc3Mnww&ixlib=rb-4.1.0&fit=max&q=80"
-        )
 
-        if file_response.status_code != 200:
-            self.fail("Could not download file")
+        file_io = BytesIO()
+        new_file = Image.new('RGB', (100, 100), color='white')
+        new_file.save(file_io, format='JPEG')
+
+        file_io.seek(0)
 
         image = SimpleUploadedFile(
-            name="testfile.jpg", content=file_response.content, content_type="image/jpeg"
+            name="testfile.jpg", content=file_io.read(), content_type="image/jpeg"
         )
         url = reverse("list_create_movie_view")
         data = {
