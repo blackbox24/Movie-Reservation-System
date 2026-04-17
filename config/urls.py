@@ -8,6 +8,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/auth/", include("accounts.urls")),
     path("api/movies/", include("movies.urls")),
+    path("api/cinemas/", include("cinemas.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # path('accounts/',include('allauth.urls')),
     # Optional UI:

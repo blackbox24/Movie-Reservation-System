@@ -89,7 +89,7 @@ class MovieTest(APITestCase):
         url = reverse("get_update_delete_movie_view", args=[self.test_movie.pk])
         response = self.client.delete(url)
 
-        is_ava = Movie.objects.filter(title="Man of steel").exists()
+        is_ava = Movie.objects.filter(title="spiderman").exists()
 
         self.assertEqual(response.status_code, 204)
         self.assertFalse(is_ava)
