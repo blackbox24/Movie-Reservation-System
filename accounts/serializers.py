@@ -15,4 +15,5 @@ class SignUpSerializer(serializers.ModelSerializer):
         password = kwargs.pop("password")
         user = super().save(**kwargs)
         user.set_password(password)
+        user.save()
         return user

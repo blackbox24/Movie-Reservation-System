@@ -8,7 +8,7 @@ from .serializers import MovieSerializer
 
 
 class MovieListCreateView(ListCreateAPIView):
-    parser_classes = (FormParser, MultiPartParser,)
+    parser_classes = (MultiPartParser,FormParser,)
     permission_classes = (IsAuthenticated, )
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
