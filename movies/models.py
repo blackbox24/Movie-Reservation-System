@@ -1,12 +1,13 @@
 from django.db import models
 
+from users.models import User
+
 
 # Create your models here.
 class Movie(models.Model):
     title = models.CharField(max_length=255, null=False, unique=True)
     description = models.TextField()
     duration = models.TimeField(null=False)
-    rating = models.IntegerField(default=0)
     poster = models.ImageField(upload_to="posters")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -24,3 +25,11 @@ class Movie(models.Model):
             models.Index(fields=("title",),),
         ]
         ordering = ["-created_at"]
+
+class Rating(models.Model):
+    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    rate = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.user_id.username}'s Rate: {self.rate}"
