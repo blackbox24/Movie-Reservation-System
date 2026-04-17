@@ -33,3 +33,6 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.user_id.username}'s Rate: {self.rate}"
+
+    class Meta:
+        unique_together = ["movie_id", "user_id"]
