@@ -28,4 +28,4 @@ jobs:
             - name: Run test
               run: |
                 cat .env.example >  .env
-                sudo uv run pytest -vv
+                uv run pytest -vv
