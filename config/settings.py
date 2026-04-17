@@ -41,6 +41,8 @@ CSRF_TRUSTED_ORIGINS = config(
 # AUTHENTICATION
 
 REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 10,
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",  # Or your chosen scheme
     "ALLOWED_VERSIONS": ["v1", "v2"],  # List of allowed versions
     "DEFAULT_VERSION": "v1",  # The default version to use if not specified
