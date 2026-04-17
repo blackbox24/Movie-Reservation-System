@@ -22,9 +22,12 @@ class Movie(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=("title",),),
+            models.Index(
+                fields=("title",),
+            ),
         ]
         ordering = ["-created_at"]
+
 
 class Rating(models.Model):
     movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)

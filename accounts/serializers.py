@@ -5,11 +5,11 @@ from users.models import User
 
 class SignUpSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = [
-            "first_name","last_name", "username","password"
-        ]
+        fields = ["first_name", "last_name", "username", "password"]
+
     def save(self, **kwargs):
         print(kwargs)
         password = kwargs.pop("password")
