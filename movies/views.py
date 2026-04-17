@@ -21,6 +21,7 @@ class MovieListCreateView(ListCreateAPIView):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
 
+
 class MovieGetUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     parser_classes = (
         MultiPartParser,

@@ -15,9 +15,7 @@ class MovieTest(APITestCase):
         )
         self.normal_user = User.objects.create_user(username="test1admin", password="testpass123")
         self.test_movie = Movie.objects.create(
-            title="spiderman",
-            description="spiderman",
-            duration="16:37:18.154Z"
+            title="spiderman", description="spiderman", duration="16:37:18.154Z"
         )
 
     def test_create_movie_successful(self):
@@ -76,9 +74,7 @@ class MovieTest(APITestCase):
 
     def test_update_movie_successful(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
-        data = {
-            "title": "Man of steel"
-        }
+        data = {"title": "Man of steel"}
         url = reverse("get_update_delete_movie_view", args=[self.test_movie.pk])
         response = self.client.patch(url, data=data)
 
