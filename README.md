@@ -66,5 +66,5 @@ This backend system for a movie reservation service. The service will allow user
 - id, movie_id, screen_id, start_time, base_price
 
 # Booking
-- id, user_id, total_amount, showtime_id, status
+- id, user_id, total_amount, showtime_id, status, qr_code(image)
 ```
