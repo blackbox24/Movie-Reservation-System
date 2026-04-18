@@ -1,15 +1,20 @@
 # Create your tests here.
 from io import BytesIO
 
+import tempfile
+import shutil
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from PIL import Image
+from django.test import override_settings
 from rest_framework.test import APITestCase
 
 from movies.models import Movie
 from users.models import User
 
+MEDIA_ROOT = tempfile.mkdtemp()
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class MovieTest(APITestCase):
     def setUp(self) -> None:
         self.admin_user = User.objects.create_user(
@@ -20,6 +25,10 @@ class MovieTest(APITestCase):
             title="spiderman", description="spiderman", duration="16:37:18.154Z"
         )
 
+    def tearDown(self) -> None:
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+        super().tearDown()
+    
     def test_create_movie_successful(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
@@ -61,7 +70,6 @@ class MovieTest(APITestCase):
         response = self.client.post(url, data=data)
 
         is_ava = Movie.objects.filter(title="test movie").exists()
-        print(response.json())
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(is_ava)
