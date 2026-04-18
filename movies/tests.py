@@ -1,18 +1,19 @@
 # Create your tests here.
+import shutil
+import tempfile
 from io import BytesIO
 
-import tempfile
-import shutil
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 from django.urls import reverse
 from PIL import Image
-from django.test import override_settings
 from rest_framework.test import APITestCase
 
 from movies.models import Movie
 from users.models import User
 
 MEDIA_ROOT = tempfile.mkdtemp()
+
 
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class MovieTest(APITestCase):
@@ -28,7 +29,7 @@ class MovieTest(APITestCase):
     def tearDown(self) -> None:
         shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
         super().tearDown()
-    
+
     def test_create_movie_successful(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
@@ -52,8 +53,8 @@ class MovieTest(APITestCase):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
         file_io = BytesIO()
-        new_file = Image.new('RGB', (100, 100), color='white')
-        new_file.save(file_io, format='JPEG')
+        new_file = Image.new("RGB", (100, 100), color="white")
+        new_file.save(file_io, format="JPEG")
 
         file_io.seek(0)
 

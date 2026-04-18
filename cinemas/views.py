@@ -1,4 +1,3 @@
-
 # Create your views here.
 # Create your views here.
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView

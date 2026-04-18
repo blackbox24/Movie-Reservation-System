@@ -30,7 +30,7 @@ class MovieTest(APITestCase):
         self.client.force_authenticate(user=self.normal_user)  # type: ignore
 
         url = reverse("list_create_cinema_view")
-        data = {"name": "test movie", "city": "Accra", "country": "Ghana", "total_screen":2}
+        data = {"name": "test movie", "city": "Accra", "country": "Ghana", "total_screen": 2}
         response = self.client.post(url, data=data)
 
         self.assertEqual(response.status_code, 403)
@@ -38,10 +38,9 @@ class MovieTest(APITestCase):
     def test_create_cinema_post_success(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
-
         url = reverse("list_create_cinema_view")
 
-        data = {"name": "test movie", "city": "Accra", "country": "Ghana", "total_screen":2}
+        data = {"name": "test movie", "city": "Accra", "country": "Ghana", "total_screen": 2}
         response = self.client.post(url, data=data)
 
         is_ava = Cinema.objects.filter(name="test movie").exists()
