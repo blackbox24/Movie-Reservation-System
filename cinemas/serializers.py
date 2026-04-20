@@ -9,6 +9,7 @@ class CinemaSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["id", "created_at", "updated_at"]
 
+
 class ScreenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Screen

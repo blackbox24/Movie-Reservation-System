@@ -5,7 +5,6 @@ from rest_framework.test import APITestCase
 from cinemas.models import Cinema, Screen
 from users.models import User
 
-
 # class MovieTest(APITestCase):
 #     def setUp(self) -> None:
 #         self.admin_user = User.objects.create_user(
@@ -90,17 +89,13 @@ class ScreenTestCase(APITestCase):
         )
 
         self.screen_obj = Screen.objects.create(
-            cinema_id=self.cinema_obj,
-            total_seats=2,
-            screen_number=f"cinema:{self.cinema_obj.pk}#1"
+            cinema_id=self.cinema_obj, total_seats=2, screen_number=f"cinema:{self.cinema_obj.pk}#1"
         )
 
     def test_cinema_signal_success(self):
         # create screen
         Screen.objects.create(
-            cinema_id=self.cinema_obj,
-            screen_number=f"cinema:{self.cinema_obj.pk}#2",
-            total_seats=2
+            cinema_id=self.cinema_obj, screen_number=f"cinema:{self.cinema_obj.pk}#2", total_seats=2
         )
 
         is_ava = Screen.objects.filter(screen_number=f"cinema:{self.cinema_obj.pk}#2").exists()
@@ -126,12 +121,12 @@ class ScreenTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
         data = {
-            "cinema_id":self.cinema_obj.pk,
+            "cinema_id": self.cinema_obj.pk,
             "total_seats": 2,
-            "screen_number": f"cinema:{self.cinema_obj.pk}#2"
+            "screen_number": f"cinema:{self.cinema_obj.pk}#2",
         }
         url = reverse("list_create_screen_view", args=[self.cinema_obj.pk])
-        response = self.client.post(url,data=data)
+        response = self.client.post(url, data=data)
         is_ava = Screen.objects.filter(screen_number=f"cinema:{self.cinema_obj.pk}#2")
 
         self.assertEqual(response.status_code, 201)
@@ -141,12 +136,12 @@ class ScreenTestCase(APITestCase):
         self.client.force_authenticate(user=self.normal_user)  # type: ignore
 
         data = {
-            "cinema_id":self.cinema_obj.pk,
+            "cinema_id": self.cinema_obj.pk,
             "total_seats": 2,
-            "screen_number": f"cinema:{self.cinema_obj.pk}#2"
+            "screen_number": f"cinema:{self.cinema_obj.pk}#2",
         }
         url = reverse("list_create_screen_view", args=[self.cinema_obj.pk])
-        response = self.client.post(url,data=data)
+        response = self.client.post(url, data=data)
 
         self.assertEqual(response.status_code, 403)
 
@@ -154,11 +149,11 @@ class ScreenTestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
         data = {
-            "cinema_id":self.cinema_obj.pk,
+            "cinema_id": self.cinema_obj.pk,
             "total_seats": 2,
-            "screen_number": f"cinema:{self.cinema_obj.pk}#2"
+            "screen_number": f"cinema:{self.cinema_obj.pk}#2",
         }
         url = reverse("list_create_screen_view", args=[40])
-        response = self.client.post(url,data=data)
+        response = self.client.post(url, data=data)
 
         self.assertEqual(response.status_code, 404)

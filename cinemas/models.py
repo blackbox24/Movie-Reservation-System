@@ -14,6 +14,7 @@ class Cinema(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+
 # Create your models here.
 class Screen(models.Model):
     cinema_id = models.ForeignKey(Cinema, on_delete=models.CASCADE)

@@ -5,5 +5,4 @@ class CinemasConfig(AppConfig):
     name = "cinemas"
 
     # def ready(self) -> None:
-        # import cinemas.signals  # noqa: F401
-
+    # import cinemas.signals  # noqa: F401
