@@ -1,12 +1,18 @@
-from django.db import models
-from cinemas.models import Cinema
 from django.core.validators import MinValueValidator
+from django.db import models
+
+from cinemas.models import Cinema
+
 
 # Create your models here.
 class Screen(models.Model):
     cinema_id = models.ForeignKey(Cinema, on_delete=models.CASCADE)
-    screen_number = models.CharField(max_length=20,null=False, blank=False)
-    total_seats = models.IntegerField(validators=[MinValueValidator(1),])
+    screen_number = models.CharField(max_length=20, null=False, blank=False)
+    total_seats = models.IntegerField(
+        validators=[
+            MinValueValidator(1),
+        ]
+    )
 
     def __str__(self):
         return f"Screen: #{self.screen_number}, cinema: #{self.cinema_id}"
@@ -18,6 +24,4 @@ class Screen(models.Model):
             ),
         ]
 
-        unique_together = [
-            "cinema_id","screen_number"
-        ]
+        unique_together = ["cinema_id", "screen_number"]
