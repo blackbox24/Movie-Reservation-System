@@ -127,7 +127,7 @@ class ScreenTestCase(APITestCase):
         }
         url = reverse("list_create_screen_view", args=[self.cinema_obj.pk])
         response = self.client.post(url, data=data)
-        is_ava = Screen.objects.filter(screen_number=f"cinema:{self.cinema_obj.pk}#2")
+        is_ava = Screen.objects.filter(screen_number=f"cinema:{self.cinema_obj.pk}#2").exists()
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(is_ava)
@@ -157,3 +157,39 @@ class ScreenTestCase(APITestCase):
         response = self.client.post(url, data=data)
 
         self.assertEqual(response.status_code, 404)
+
+
+    def test_update_screen_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
+
+        data = {
+            "total_seats": 12,
+        }
+        url = reverse("get_update_delete_screen_view", args=[self.cinema_obj.pk, self.screen_obj.pk])
+        response = self.client.patch(url, data=data)
+
+        try:
+            screen = Screen.objects.get(screen_number=f"cinema:{self.cinema_obj.pk}#1")
+        except Screen.DoesNotExist:
+            self.fail()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(screen.total_seats == 12)
+
+    def test_retrieve_screen_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
+
+        url = reverse("get_update_delete_screen_view", args=[self.cinema_obj.pk, self.screen_obj.pk])
+        response = self.client.get(url)
+
+        data = response.json()["data"]
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(data['total_seats'] == 2)
+
+    def test_delete_screen_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
+
+        url = reverse("get_update_delete_screen_view", args=[self.cinema_obj.pk, self.screen_obj.pk])
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 204)
