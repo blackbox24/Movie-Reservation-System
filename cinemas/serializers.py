@@ -16,5 +16,6 @@ class ScreenSerializer(serializers.ModelSerializer):
         fields = ["id", "cinema_id", "screen_number", "total_seats"]
         read_only_fields = ["id"]
 
+
 class ScreenUpdateSerializer(serializers.Serializer):
     total_seats = serializers.IntegerField()

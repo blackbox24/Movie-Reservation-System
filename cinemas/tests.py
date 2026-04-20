@@ -5,77 +5,78 @@ from rest_framework.test import APITestCase
 from cinemas.models import Cinema, Screen
 from users.models import User
 
-# class MovieTest(APITestCase):
-#     def setUp(self) -> None:
-#         self.admin_user = User.objects.create_user(
-#             username="testadmin", password="testpass123", role="admin"
-#         )
-#         self.normal_user = User.objects.create_user(username="test1admin", password="testpass123")
-#         self.test_cinema = Cinema.objects.create(
-#             name="local cinema", city="Accra", country="Ghana", total_screen=2
-#         )
 
-#     def test_create_cinema_successful(self):
-#         self.client.force_authenticate(user=self.admin_user)  # type: ignore
+class MovieTest(APITestCase):
+    def setUp(self) -> None:
+        self.admin_user = User.objects.create_user(
+            username="testadmin", password="testpass123", role="admin"
+        )
+        self.normal_user = User.objects.create_user(username="test1admin", password="testpass123")
+        self.test_cinema = Cinema.objects.create(
+            name="local cinema", city="Accra", country="Ghana", total_screen=2
+        )
 
-#         url = reverse("list_create_cinema_view")
-#         response = self.client.get(url)
+    def test_create_cinema_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
-#         cinemas = response.json()
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(len(cinemas) > 0)
+        url = reverse("list_create_cinema_view")
+        response = self.client.get(url)
 
-#     def test_create_cinema_post_fail(self):
-#         self.client.force_authenticate(user=self.normal_user)  # type: ignore
+        cinemas = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(len(cinemas) > 0)
 
-#         url = reverse("list_create_cinema_view")
-#         data = {"name": "test movie", "city": "Accra", "country": "Ghana", "total_screen": 2}
-#         response = self.client.post(url, data=data)
+    def test_create_cinema_post_fail(self):
+        self.client.force_authenticate(user=self.normal_user)  # type: ignore
 
-#         self.assertEqual(response.status_code, 403)
+        url = reverse("list_create_cinema_view")
+        data = {"name": "test movie", "city": "Accra", "country": "Ghana", "total_screen": 2}
+        response = self.client.post(url, data=data)
 
-#     def test_create_cinema_post_success(self):
-#         self.client.force_authenticate(user=self.admin_user)  # type: ignore
+        self.assertEqual(response.status_code, 403)
 
-#         url = reverse("list_create_cinema_view")
+    def test_create_cinema_post_success(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
-#         data = {"name": "test movie", "city": "Accra", "country": "Ghana", "total_screen": 2}
-#         response = self.client.post(url, data=data)
+        url = reverse("list_create_cinema_view")
 
-#         is_ava = Cinema.objects.filter(name="test movie").exists()
+        data = {"name": "test movie", "city": "Accra", "country": "Ghana", "total_screen": 2}
+        response = self.client.post(url, data=data)
 
-#         self.assertEqual(response.status_code, 201)
-#         self.assertTrue(is_ava)
+        is_ava = Cinema.objects.filter(name="test movie").exists()
 
-#     def test_retrieve_cinema_successful(self):
-#         self.client.force_authenticate(user=self.admin_user)  # type: ignore
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(is_ava)
 
-#         url = reverse("get_update_delete_cinema_view", args=[self.test_cinema.pk])
-#         response = self.client.get(url)
+    def test_retrieve_cinema_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
-#         self.assertEqual(response.status_code, 200)
+        url = reverse("get_update_delete_cinema_view", args=[self.test_cinema.pk])
+        response = self.client.get(url)
 
-#     def test_update_cinema_successful(self):
-#         self.client.force_authenticate(user=self.admin_user)  # type: ignore
-#         data = {"name": "Man of steel"}
-#         url = reverse("get_update_delete_cinema_view", args=[self.test_cinema.pk])
-#         response = self.client.patch(url, data=data)
+        self.assertEqual(response.status_code, 200)
 
-#         is_ava = Cinema.objects.filter(name="Man of steel").exists()
+    def test_update_cinema_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
+        data = {"name": "Man of steel"}
+        url = reverse("get_update_delete_cinema_view", args=[self.test_cinema.pk])
+        response = self.client.patch(url, data=data)
 
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue(is_ava)
+        is_ava = Cinema.objects.filter(name="Man of steel").exists()
 
-#     def test_delete_cinema_successful(self):
-#         self.client.force_authenticate(user=self.admin_user)  # type: ignore
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(is_ava)
 
-#         url = reverse("get_update_delete_cinema_view", args=[self.test_cinema.pk])
-#         response = self.client.delete(url)
+    def test_delete_cinema_successful(self):
+        self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
-#         is_ava = Cinema.objects.filter(name="local cinema").exists()
+        url = reverse("get_update_delete_cinema_view", args=[self.test_cinema.pk])
+        response = self.client.delete(url)
 
-#         self.assertEqual(response.status_code, 204)
-#         self.assertFalse(is_ava)
+        is_ava = Cinema.objects.filter(name="local cinema").exists()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(is_ava)
 
 
 class ScreenTestCase(APITestCase):
@@ -158,14 +159,15 @@ class ScreenTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 404)
 
-
     def test_update_screen_successful(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
         data = {
             "total_seats": 12,
         }
-        url = reverse("get_update_delete_screen_view", args=[self.cinema_obj.pk, self.screen_obj.pk])
+        url = reverse(
+            "get_update_delete_screen_view", args=[self.cinema_obj.pk, self.screen_obj.pk]
+        )
         response = self.client.patch(url, data=data)
 
         try:
@@ -179,17 +181,21 @@ class ScreenTestCase(APITestCase):
     def test_retrieve_screen_successful(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
-        url = reverse("get_update_delete_screen_view", args=[self.cinema_obj.pk, self.screen_obj.pk])
+        url = reverse(
+            "get_update_delete_screen_view", args=[self.cinema_obj.pk, self.screen_obj.pk]
+        )
         response = self.client.get(url)
 
         data = response.json()["data"]
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(data['total_seats'] == 2)
+        self.assertTrue(data["total_seats"] == 2)
 
     def test_delete_screen_successful(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore
 
-        url = reverse("get_update_delete_screen_view", args=[self.cinema_obj.pk, self.screen_obj.pk])
+        url = reverse(
+            "get_update_delete_screen_view", args=[self.cinema_obj.pk, self.screen_obj.pk]
+        )
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, 204)

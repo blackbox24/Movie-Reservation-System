@@ -90,7 +90,7 @@ class ScreenRetrieveUpdateDeleteView(APIView):
         data = self.serializer_class(screen).data
         return Response({"data": data}, status=status.HTTP_200_OK)
 
-    def patch(self, request, cinema_id,id, *args, **kwargs):
+    def patch(self, request, cinema_id, id, *args, **kwargs):
         try:
             screen = Screen.objects.get(id=id)
         except Screen.DoesNotExist:
@@ -107,14 +107,14 @@ class ScreenRetrieveUpdateDeleteView(APIView):
         serializer = ScreenUpdateSerializer(data=request.data)
         if serializer.is_valid():
             # check it the number of
-            total_seats = serializer.validated_data['total_seats'] # type: ignore
+            total_seats = serializer.validated_data["total_seats"]  # type: ignore
             screen.total_seats = total_seats
             screen.save()
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self,request, cinema_id, id, *args, **kwargs):
+    def delete(self, request, cinema_id, id, *args, **kwargs):
         try:
             screen = Screen.objects.get(id=id)
         except Screen.DoesNotExist:
