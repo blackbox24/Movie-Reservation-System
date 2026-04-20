@@ -107,6 +107,7 @@ CUSTOM_APPS = [
     "users",
     "movies",
     "cinemas",
+    "screens",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
