@@ -2,7 +2,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from cinemas.models import Cinema
+from cinemas.models import Cinema, Screen
 from users.models import User
 
 
@@ -77,3 +77,21 @@ class MovieTest(APITestCase):
 
         self.assertEqual(response.status_code, 204)
         self.assertFalse(is_ava)
+
+
+class ScreenTestCase(APITestCase):
+    def setUp(self, *args, **kwargs) -> None:
+        self.cinema_obj = Cinema.objects.create(
+            name="local cinema", city="Accra", country="Ghana", total_screen=2
+        )
+    def test_cinema_signal_success(self):
+        # create screen
+        Screen.objects.create(
+            cinema_id=self.cinema_obj,
+            screen_number=f"cinema:{self.cinema_obj.pk}#2",
+            total_seats=2
+        )
+
+        is_ava = Screen.objects.filter(screen_number=f"cinema:{self.cinema_obj.pk}#2").exists()
+        self.assertTrue(is_ava)
+
