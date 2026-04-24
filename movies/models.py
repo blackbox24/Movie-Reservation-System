@@ -7,7 +7,7 @@ from users.models import User
 class Movie(models.Model):
     title = models.CharField(max_length=255, null=False, unique=True)
     description = models.TextField()
-    duration = models.TimeField(null=False)
+    duration = models.PositiveIntegerField(help_text="Duration in minutes", null=False)
     poster = models.ImageField(upload_to="posters")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

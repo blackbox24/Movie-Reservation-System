@@ -23,7 +23,7 @@ class MovieTest(APITestCase):
         )
         self.normal_user = User.objects.create_user(username="test1admin", password="testpass123")
         self.test_movie = Movie.objects.create(
-            title="spiderman", description="spiderman", duration="16:37:18.154Z"
+            title="spiderman", description="spiderman", duration=200
         )
 
     def tearDown(self) -> None:
@@ -65,7 +65,7 @@ class MovieTest(APITestCase):
         data = {
             "title": "test movie",
             "description": "test movie",
-            "duration": "16:37:18.154Z",
+            "duration": 200,
             "poster": image,
         }
         response = self.client.post(url, data=data)

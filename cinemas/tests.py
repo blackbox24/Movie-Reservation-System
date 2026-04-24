@@ -110,13 +110,6 @@ class ScreenTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_list_screen_fail(self):
-        self.client.force_authenticate(user=self.normal_user)  # type: ignore
-
-        url = reverse("list_create_screen_view", args=[self.cinema_obj.pk])
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 403)
 
     def test_create_screen_success(self):
         self.client.force_authenticate(user=self.admin_user)  # type: ignore

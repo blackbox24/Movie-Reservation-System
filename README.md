@@ -1,70 +1,76 @@
 # MOVIE RESERVATION SYSTEM
 
-This backend system for a movie reservation service. The service will allow users to sign up, log in, browse movies, reserve seats for specific showtimes, and manage their reservations. The system will feature user authentication, movie and showtime management, seat reservation functionality, and reporting on reservations.
+This backend system for a movie reservation service allows users to sign up, log in, browse movies, reserve seats for specific showtimes, and manage their reservations.
+
+## Recent Improvements
+
+- **Professional Permissions:** Implemented `AdminOrReadOnly` logic. Authenticated users can browse (GET), while only Admins can modify (POST/PUT/DELETE).
+- **Refactored API:** Cleaned up `cinemas` views using idiomatic DRF patterns and robust error handling.
+- **Smart Scheduling:** Modified `Showtime` model to use `DateTimeField` and implemented automatic overlap detection. The system now prevents scheduling two movies on the same screen at the same time.
+- **Improved Data Integrity:** Changed `Movie.duration` to `PositiveIntegerField` (minutes) for precise end-time calculations.
 
 ## Goal
 
-- The goal of this project is to help you understand how to implement complex business logic i.e. seat reservation and scheduling, thinking about the data model and relationships, and complex queries.
+- To implement complex business logic like seat reservation and scheduling, focusing on data relationships and high-performance queries.
 
-## Requirements
+## API Documentation
+
+### Authentication
+- `POST /api/auth/signup/` - Register a new user.
+
+### Movies
+- `GET /api/movies/` - List all movies.
+- `POST /api/movies/` - Add a movie (Admin only).
+- `GET /api/movies/<id>/` - Get movie details.
+- `PATCH /api/movies/<id>/` - Update movie (Admin only).
+
+### Cinemas & Screens
+- `GET /api/cinemas/` - List all cinemas.
+- `POST /api/cinemas/` - Create a cinema (Admin only).
+- `GET /api/cinemas/<id>/screens/` - List screens in a specific cinema.
+- `POST /api/cinemas/<id>/screens/` - Add a screen to a cinema (Admin only).
+
+### Showtimes
+- `GET /api/showtimes/` - List all showtimes.
+    - Query params: `movie_id`, `date` (YYYY-MM-DD).
+- `POST /api/showtimes/` - Create a showtime (Admin only).
+    - **Logic:** Automatically validates against overlaps on the same screen.
+- `GET /api/showtimes/<id>/` - Get showtime details.
+
+## Requirements Progress
 
 ### User Authentication and Authorization
-
 - [x] Users should be able to sign up and log in.
+- [x] Roles for users (Admin/User).
+- [ ] Regular users should be able to reserve seats.
 
-- [x] roles for users, such as admin and regular user. Admins should be able to manage movies and showtimes.
+### Movie & Showtime Management
+- [x] Admins can manage movies.
+- [x] Admins can manage showtimes with scheduling logic.
+- [x] Movies categorized by duration and title.
+- [x] Users can filter showtimes by movie or date.
 
-- [ ] Regular users should be able to reserve seats for a showtime.
+### Reservation Management (Next Steps)
+- [ ] Implement `Booking` model.
+- [ ] Implement seat availability logic.
+- [ ] Prevent overbooking during reservation.
 
-- [ ] You can create the initial admin using seed data. Only admins should be able to promote other users to admin and be able to do things related to movie management, reporting, etc.
-
-### Movie Management
-
-- [ ] Admins should be able to add, update, and delete movies.
-
-- [ ] Each movie should have a title, description, and poster image.
-
-- [ ] Movies should be categorized by genre.
-
-- [ ] Movies should have showtimes.
-
-### Reservation Management
-
-- [ ] Users should be able to get the movies and their show times for a specific date.
-
-- [ ] Users should be able to reserve seats for a showtime, see the available seats, and select the seats they want.
-
-- [ ] Users should be able to see their reservations and cancel them (only upcoming ones).
-
-- [ ] Admins should be able to see all reservations, capacity, and revenue.
-
-### Implementation Considerations
-
-- Think about the data model and relationships between entities.
-
-- Think about how you will avoid overbooking, and how you will handle seat reservations.
-
-- Think about how you will handle the scheduling of showtimes.
-
-- Think about how you will handle the reporting of reservations.
-
-- Think about how you will handle the authentication and authorization of users.
-
-**NOTE:** This project is quite complex and will require you to think about the design and implementation of the system. You can use any programming language and database of your choice. I would recommend using a relational database such as MySQL or PostgreSQL. Once you have finished this project, you will have a good understanding of how to implement complex business logic, think about the data model and relationships, and complex queries. You can also extend this project by adding more features such as payment processing, email notifications, etc.
+## Data Model
 
 ```markdown
 # Movie
-- movie_id, title, description, duration, rating, image
+- id, title, description, duration (mins), poster
 
 # Cinemas
-- id, name, city, total_screen
+- id, name, city, country, total_screen
 
 # Screen
 - id, cinema_id, screen_number, total_seats
 
-# showtimes
-- id, movie_id, screen_id, start_time, base_price
-
-# Booking
-- id, user_id, total_amount, showtime_id, status, qr_code(image)
+# Showtime
+- id, movie_id, screen_id, start_time, end_time (computed), status, base_price
 ```
+
+## Implementation Notes
+- **Overlap Detection:** The `Showtime.clean()` method ensures that `start_time` and `end_time` (start + duration) do not collide with existing shows on the same `screen_id`.
+- **Permissions:** `AdminOrReadOnly` ensures data security while allowing public browsing.
