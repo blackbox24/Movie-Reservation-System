@@ -4,10 +4,11 @@ This backend system for a movie reservation service allows users to sign up, log
 
 ## Recent Improvements
 
-- **Professional Permissions:** Implemented `AdminOrReadOnly` logic. Authenticated users can browse (GET), while only Admins can modify (POST/PUT/DELETE).
-- **Refactored API:** Cleaned up `cinemas` views using idiomatic DRF patterns and robust error handling.
-- **Smart Scheduling:** Modified `Showtime` model to use `DateTimeField` and implemented automatic overlap detection. The system now prevents scheduling two movies on the same screen at the same time.
-- **Improved Data Integrity:** Changed `Movie.duration` to `PositiveIntegerField` (minutes) for precise end-time calculations.
+- **Booking System:** Implemented a full reservation system with seat-level validation.
+- **Seat Safety:** Uses database transactions and specific seat checks (`seat_row`, `seat_number`) to prevent double-booking.
+- **Auto-Calculations:** Total price is automatically calculated based on showtime base price and ticket count.
+- **Smart Scheduling:** Modified `Showtime` model to use `DateTimeField` and implemented automatic overlap detection.
+- **Professional Permissions:** Refactored all apps to use consistent, secure DRF patterns.
 
 ## Goal
 
@@ -18,59 +19,55 @@ This backend system for a movie reservation service allows users to sign up, log
 ### Authentication
 - `POST /api/auth/signup/` - Register a new user.
 
-### Movies
+### Movies & Showtimes
 - `GET /api/movies/` - List all movies.
-- `POST /api/movies/` - Add a movie (Admin only).
-- `GET /api/movies/<id>/` - Get movie details.
-- `PATCH /api/movies/<id>/` - Update movie (Admin only).
-
-### Cinemas & Screens
-- `GET /api/cinemas/` - List all cinemas.
-- `POST /api/cinemas/` - Create a cinema (Admin only).
-- `GET /api/cinemas/<id>/screens/` - List screens in a specific cinema.
-- `POST /api/cinemas/<id>/screens/` - Add a screen to a cinema (Admin only).
-
-### Showtimes
 - `GET /api/showtimes/` - List all showtimes.
     - Query params: `movie_id`, `date` (YYYY-MM-DD).
-- `POST /api/showtimes/` - Create a showtime (Admin only).
-    - **Logic:** Automatically validates against overlaps on the same screen.
-- `GET /api/showtimes/<id>/` - Get showtime details.
+- `GET /api/showtimes/<id>/` - Get showtime details (includes `remaining_seats`).
+
+### Bookings (New)
+- `GET /api/bookings/` - List your bookings (Admins see all).
+- `POST /api/bookings/` - Create a reservation.
+    - **Payload:** `{"showtime": id, "tickets": [{"seat_row": "A", "seat_number": 1}, ...]}`
+    - **Logic:** Validates seat availability and future date. Uses Atomic transactions.
+- `GET /api/bookings/<id>/` - Get booking details and tickets.
+- `PATCH /api/bookings/<id>/cancel/` - Cancel an upcoming reservation.
 
 ## Requirements Progress
 
 ### User Authentication and Authorization
 - [x] Users should be able to sign up and log in.
 - [x] Roles for users (Admin/User).
-- [ ] Regular users should be able to reserve seats.
+- [x] Regular users can reserve seats.
 
 ### Movie & Showtime Management
 - [x] Admins can manage movies.
 - [x] Admins can manage showtimes with scheduling logic.
-- [x] Movies categorized by duration and title.
 - [x] Users can filter showtimes by movie or date.
 
-### Reservation Management (Next Steps)
-- [ ] Implement `Booking` model.
-- [ ] Implement seat availability logic.
-- [ ] Prevent overbooking during reservation.
+### Reservation Management
+- [x] Implement `Booking` and `Ticket` models.
+- [x] Implement seat selection logic.
+- [x] Prevent overbooking and double-booking seats.
+- [x] Users can see and cancel their upcoming reservations.
 
 ## Data Model
 
 ```markdown
 # Movie
-- id, title, description, duration (mins), poster
-
-# Cinemas
-- id, name, city, country, total_screen
-
-# Screen
-- id, cinema_id, screen_number, total_seats
+- id, title, description, duration (mins)
 
 # Showtime
-- id, movie_id, screen_id, start_time, end_time (computed), status, base_price
+- id, movie_id, screen_id, start_time, end_time (computed), base_price
+
+# Booking
+- id, user_id, showtime_id, total_amount, status, created_at
+
+# Ticket
+- id, booking_id, seat_row, seat_number
 ```
 
 ## Implementation Notes
-- **Overlap Detection:** The `Showtime.clean()` method ensures that `start_time` and `end_time` (start + duration) do not collide with existing shows on the same `screen_id`.
-- **Permissions:** `AdminOrReadOnly` ensures data security while allowing public browsing.
+- **Atomic Bookings:** The booking process is wrapped in a transaction. If a seat becomes unavailable during the request, the entire booking is rolled back.
+- **Remaining Seats:** `Showtime` has a dynamic property `remaining_seats` that calculates availability in real-time.
+- **Cancellation Policy:** Bookings can only be cancelled *before* the showtime starts.

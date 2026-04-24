@@ -32,6 +32,12 @@ class Showtime(models.Model):
     def end_time(self):
         return self.start_time + datetime.timedelta(minutes=self.movie_id.duration)
 
+    @property
+    def remaining_seats(self):
+        from bookings.models import Ticket
+        booked_seats = Ticket.objects.filter(booking__showtime=self, booking__status='confirmed').count()
+        return self.screen_id.total_seats - booked_seats
+
     def clean(self):
         # Prevent overlapping showtimes on the same screen
         if self.start_time and self.movie_id and self.screen_id:
