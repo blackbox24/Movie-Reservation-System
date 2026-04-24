@@ -44,7 +44,7 @@ class MovieTest(APITestCase):
         self.client.force_authenticate(user=self.normal_user)  # type: ignore
 
         url = reverse("list_create_movie_view")
-        data = {"title": "test movie", "description": "", "duration": "16:37:18.154Z", "poster": ""}
+        data = {"title": "test movie", "description": "", "duration": 120, "poster": ""}
         response = self.client.post(url, data=data)
 
         self.assertEqual(response.status_code, 403)

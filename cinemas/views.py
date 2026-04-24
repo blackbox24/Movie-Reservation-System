@@ -45,11 +45,11 @@ class ScreenListCreateView(APIView):
 
     def post(self, request, id, *args, **kwargs):
         get_object_or_404(Cinema, id=id)
-        
+
         # Ensure cinema_id in request data matches the URL parameter if provided
         data = request.data.copy()
-        data['cinema_id'] = id
-        
+        data["cinema_id"] = id
+
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             serializer.save()
